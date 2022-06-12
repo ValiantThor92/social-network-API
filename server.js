@@ -15,7 +15,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/socialDB', {
   useUnifiedTopology: true,
 });
 
-app.use(require("./routes/api.js"));
+app.use(require("./routes/index.js"));
 
 app.listen(PORT, () => {
   console.log(`API server running on port ${PORT}!`);
