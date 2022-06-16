@@ -4,6 +4,8 @@ module.exports = {
   // get all thoughts
   getThought(req, res) {
     Thought.find({})
+      .select('-__v')
+      .sort({ createdAt: -1 })
       .then((thought) => res.json(thought))
       .catch((err) => res.status(500).json(err));
   },
@@ -23,14 +25,14 @@ module.exports = {
   //create a thought and push the created thought's _id to the associated user's thoughts array field
   createThought(req, res) {
     Thought.create(req.body)
-      .then(({ _id }) => {
+      .then(thought => {
         return User.findOneAndUpdate(
           { _id: req.body.userId },
-          { $push: { thoughts: _id } },
+          { $push: { thoughts: thought._id } },
           { new: true }
         );
       })
-      .then((thought) =>
+      .then(thought =>
         !thought
           ? res.status(404).json({ message: "No User found with this ID!" })
           : res.json(thought)
